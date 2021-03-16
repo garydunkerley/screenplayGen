@@ -3,26 +3,51 @@ package main
 import (
 	"fmt"
 	"github.com/gocolly/colly"
+	"io"
+	"net/http"
+	"os"
+	"strings"
 )
 
-type screenPlay struct {
-	FileName string
-	FileText []string
+func download(url, filename string) (err error) {
+	fmt.Println("Downloading ", url, " to ", filename)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	f, err := os.Create(filename)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	_, err = io.Copy(f, resp.Body)
+	return
 }
 
 func main() {
-	// Instantiate default collector
+
+	show := "Seinfeld"
+
+	wd, _ := os.Getwd()
+	directory := wd + "/" + show + "/"
+
 	c := colly.NewCollector(
-		// Visit only domains: hackerspaces.org, wiki.hackerspaces.org
-		colly.AllowedDomains("imsdb.com/TV/Futurama"),
+		// This prevents Colly from wandering off into
+		// irrelevant places
+		colly.AllowedDomains("imsdb.com"),
 	)
 
-	myScreenPlays := []screenPlay{}
+	fmt.Println("Here we go!")
 	// setting a hard limit on how many links the collector will explore.
 
 	numVisited := 0
 	c.OnRequest(func(r *colly.Request) {
-		if numVisited > 200 {
+		fmt.Println("Visited ", numVisited, " pages so far!")
+		if numVisited > 600 {
 			r.Abort()
 		}
 		numVisited++
@@ -31,34 +56,35 @@ func main() {
 	// On every a element which has href attribute call callback
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
+		fmt.Println(link)
 
-		// If the link in question begins with either of these strings, visit it.
-		if strings.HasPrefix(link, "/TV Transcripts/Futurama") || strings.HasPrefix(link, "/transcripts/Futurama") {
+		// If the link in question begins with the given string, visit it.
+		if strings.HasPrefix(link, "/TV Transcripts/"+show) {
 			e.Request.Visit(link)
 		}
+		// If the a href element begins with this string, then trim the string to get the name and download the linked html file
+		if strings.HasPrefix(link, "/transcripts/"+show+"-") {
+			myLink := "https://imsdb.com" + link
 
-	})
+			name := strings.TrimLeft(link, "/transcripts/"+show+"-")
+			fileTitle := directory + name
 
-	// Before making a request print "Visiting ..."
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL.String())
-	})
-
-	c.OnHTML("td", func(e *colly.HTMLElement) {
-		if e.Attr("class") == "scrtext" {
-			log.Println("Futurama script found!")
-			// e.ChildText
-			// How to iterate over all lines
-			// contained in between <pre> </pre>
-			// tags
-
-			fullText := []string{}
-
+			fmt.Println("Checking if " + fileTitle + " exists ...")
+			if _, err := os.Stat(fileTitle); os.IsNotExist(err) {
+				err := download(myLink, fileTitle)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(fileTitle + " saved!")
+			} else {
+				fmt.Println(fileTitle + " already exists!")
+			}
 		}
 	})
 
-	// TODO: if the line in question reads td class = "scrtext" then
-	// we need to proceed with extracting the wrapped text
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting", r.URL)
+	})
 
-	c.Visit("imsdb.com/TV/Futurama.html")
+	c.Visit("https://imsdb.com/TV/" + show + ".html")
 }
