@@ -1,0 +1,3 @@
+# Don't track content in of these folders 
+python/project_env/
+
