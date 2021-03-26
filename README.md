@@ -5,9 +5,9 @@
 
 Harness the power of GPT-2 to create Futurama scripts from another dimension!
 
-Scripts for our dataset were scraped from imdbs.com using the golang package Colly.
+----------------------
 
------------------------
+Scripts for our dataset were scraped from imdbs.com using the golang package Colly.
 
 After cloning the repository, you can construct the docker image by navigating into the gpt-2 folder and running 
 
