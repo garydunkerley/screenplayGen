@@ -1,6 +1,8 @@
-![bitemyshinymetalass](https://user-images.githubusercontent.com/58280110/112587816-48410e80-8dcc-11eb-9c06-7ede87a9c49d.png)
+![bitemyshinymetalGPT-2](https://user-images.githubusercontent.com/58280110/112588421-5b081300-8dcd-11eb-8a9b-eb0c979e1e91.png)
 
-Use GPT-2 to produce Futurama scripts from another dimension!
+## BiteMyShinyGPT-2
+
+Harness the power of GPT-2 to create Futurama scripts from another dimension!
 
 Scripts for our dataset were scraped from imdbs.com using the golang package Colly.
 
