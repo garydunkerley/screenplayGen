@@ -1,3 +1,4 @@
+![bitemyshinymetalass](https://user-images.githubusercontent.com/58280110/112587816-48410e80-8dcc-11eb-9c06-7ede87a9c49d.png)
 # BiteMyShinyMetalGPT-2
 
 Use gpt-2 to produce Futurama scripts from another dimension!
