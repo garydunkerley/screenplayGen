@@ -1,5 +1,10 @@
-# screenplayGen
-A simple implementation of colly to scrape screenplays from television shows and a fork of GPT-2 with modified dockerfiles. 
+# BiteMyShinyMetalGPT-2
+
+Use gpt-2 to produce Futurama scripts from another dimension!
+
+All scripts were scraped from imdbs.com using the golang package Colly.
+
+-----------------------
 
 After cloning the repository, you can construct the docker image by navigating into the gpt-2 folder and running 
 
